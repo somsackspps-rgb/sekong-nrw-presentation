@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="lo" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#12141C">
+  <title>ຍຸດທະສາດການຫຼຸດຜົນກະທົບຈາກນ້ຳສູນເສຍ (NRW Reduction Strategy)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts for Lao & English -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              orange: '#FF6B35',
+              darkorange: '#E85D04',
+              charcoal: '#1E212B',
+              slate: '#2B2D42',
+              lightbg: '#F8F9FA',
+              cardbg: '#252936',
+              accent: '#FF9F1C'
+            }
+          },
+          fontFamily: {
+            lao: ['Noto Sans Lao', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'Noto Sans Lao', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Noto Sans Lao', 'Plus Jakarta Sans', sans-serif;
+      background-color: #12141C;
+      color: #F8F9FA;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Custom Scrollbar for Drawer & Modal */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1E212B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #FF6B35;
+      border-radius: 4px;
+    }
+
+    /* Transition Effects */
+    .slide {
+      display: none;
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Glow Effects */
+    .glow-orange {
+      box-shadow: 0 0 25px rgba(255, 107, 53, 0.25);
+    }
+    .glow-card {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Glassmorphism */
+    .glass-panel {
+      background: rgba(30, 33, 43, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Custom Tooltip Animation */
+    .diagram-node {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .diagram-node:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(255, 107, 53, 0.3);
+    }
+
+    /* Responsive layout for phones and small tablets */
+    *, *::before, *::after { box-sizing: border-box; }
+    img, svg, video, canvas { max-width: 100%; }
+    button { touch-action: manipulation; }
+
+    @media (max-width: 640px) {
+      html { min-height: 100%; height: auto; }
+      body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        height: auto !important;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-text-size-adjust: 100%;
+      }
+      body > header {
+        height: auto !important;
+        min-height: 3.5rem;
+        padding: .5rem .65rem !important;
+        gap: .45rem;
+      }
+      body > header > div:first-child { min-width: 0; flex: 1 1 auto; gap: .45rem; }
+      body > header > div:first-child > div:last-child {
+        white-space: normal;
+        line-height: 1.35;
+        font-size: .68rem;
+        max-width: none;
+      }
+      body > header > div:last-child { flex: 0 0 auto; gap: .35rem !important; }
+      #currentSlideNum, #totalSlidesNum { font-size: .7rem; }
+      #toggleDrawerBtn, #fullscreenBtn { padding: .5rem !important; }
+
+      main {
+        display: block !important;
+        width: 100%;
+        height: auto !important;
+        min-height: 0;
+        overflow: visible !important;
+        padding: .5rem !important;
+      }
+      .slide, .slide.active {
+        display: none;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        min-height: calc(100dvh - 8.5rem);
+        margin: 0 auto;
+        padding: 1rem !important;
+        border-radius: .9rem;
+        overflow: visible !important;
+        transform: none;
+        gap: 1.1rem;
+      }
+      .slide.active { display: flex; }
+      .slide > .absolute { display: none; }
+      .slide h1 { font-size: clamp(1.55rem, 7vw, 2.15rem) !important; line-height: 1.35 !important; overflow-wrap: anywhere; }
+      .slide h2 { font-size: clamp(1.15rem, 5vw, 1.5rem) !important; line-height: 1.45 !important; overflow-wrap: anywhere; }
+      .slide h3 { font-size: 1rem !important; line-height: 1.45 !important; }
+      .slide p, .slide li { overflow-wrap: anywhere; line-height: 1.65; }
+      .slide .text-6xl { font-size: 2rem !important; }
+      .slide .text-5xl { font-size: 1.8rem !important; }
+      .slide .text-4xl { font-size: 1.6rem !important; }
+      .slide .text-3xl { font-size: 1.35rem !important; }
+      .slide .text-2xl { font-size: 1.15rem !important; }
+      .slide .p-8, .slide .p-10, .slide .p-12 { padding: .85rem !important; }
+      .slide .gap-8 { gap: 1rem !important; }
+      .slide .gap-6 { gap: .85rem !important; }
+      .slide .my-auto { margin-top: .5rem !important; margin-bottom: .5rem !important; }
+      .slide .grid { min-width: 0; }
+      .slide table { display: block; max-width: 100%; overflow-x: auto; }
+      .slide pre { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+      body > footer {
+        position: sticky;
+        bottom: 0;
+        height: auto !important;
+        min-height: 3.8rem;
+        padding: .55rem .65rem !important;
+        gap: .5rem;
+        padding-bottom: max(.55rem, env(safe-area-inset-bottom));
+      }
+      body > footer button { min-height: 2.6rem; padding: .55rem .75rem !important; }
+      #drawerOverlay { padding: .5rem !important; }
+      #drawerOverlay > div { padding: .85rem !important; max-height: 88dvh !important; }
+      #thumbnailGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem !important; }
+      #thumbnailGrid > div { min-height: 5rem; height: auto !important; padding: .65rem !important; overflow-wrap: anywhere; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body class="h-full w-full flex flex-col justify-between relative bg-brand-charcoal text-gray-100">
+
+  <!-- TOP BAR / HEADER NAVIGATION -->
+  <header class="h-14 px-6 glass-panel border-b border-gray-800/80 flex items-center justify-between z-30 shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-darkorange to-brand-orange flex items-center justify-center font-bold text-white shadow-md">
+        <i class="fa-solid fa-droplet text-sm"></i>
+      </div>
+      <div class="text-xs sm:text-sm font-semibold tracking-wide text-gray-200 truncate max-w-xs sm:max-w-md">
+        ຍຸດທະສາດການຫຼຸດຜົນກະທົບຈາກນ້ຳສູນເສຍ (NRW Reduction Strategy)
+      </div>
+    </div>
+
+    <!-- Slide Tracker & Controls -->
+    <div class="flex items-center space-x-2 sm:space-x-4">
+      <div class="bg-gray-800/80 px-3 py-1 rounded-full text-xs font-mono font-medium text-brand-orange border border-gray-700">
+        <span id="currentSlideNum">01</span> / <span id="totalSlidesNum">10</span>
+      </div>
+
+      <button id="toggleDrawerBtn" class="p-2 rounded-lg bg-gray-800/80 hover:bg-brand-orange hover:text-white transition text-gray-300 text-xs sm:text-sm flex items-center gap-2 border border-gray-700" title="Slide Overview">
+        <i class="fa-solid fa-border-all"></i>
+        <span class="hidden md:inline">ເມນູສະໄລ້</span>
+      </button>
+
+      <button id="fullscreenBtn" class="p-2 rounded-lg bg-gray-800/80 hover:bg-brand-orange hover:text-white transition text-gray-300 text-xs sm:text-sm border border-gray-700" title="Fullscreen Toggle">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN SLIDES CONTAINER -->
+  <main class="flex-1 relative overflow-hidden w-full h-full flex items-center justify-center p-4 sm:p-6 md:p-8">
+
+    <!-- SLIDE 1: Title Slide -->
+    <section class="slide active w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 md:p-12 relative overflow-hidden glow-card border-l-4 border-l-brand-orange">
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Badge Header -->
+      <div class="flex items-center justify-between z-10">
+        <span class="px-4 py-1.5 rounded-full bg-brand-orange/20 border border-brand-orange/40 text-brand-orange font-semibold text-xs sm:text-sm tracking-wide">
+          <i class="fa-solid fa-award mr-1.5"></i> ມາດຕະຖານສາກົນ IWA & World Bank
+        </span>
+        <div class="text-xs text-gray-400 font-mono">
+          <i class="fa-regular fa-calendar-check mr-1"></i> ແຜນຍຸດທະສາດປະຈຳປີ
+        </div>
+      </div>
+
+      <!-- Main Title Block -->
+      <div class="my-auto py-6 z-10">
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+          ຍຸດທະສາດການຫຼຸດຜົນກະທົບຈາກ<br class="hidden sm:inline">
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange via-orange-400 to-amber-300">
+            ນ້ຳສູນເສຍ (NRW Reduction)
+          </span>
+        </h1>
+        <p class="text-base sm:text-xl text-gray-300 max-w-3xl leading-relaxed font-light mt-2">
+          ວິທີການ, ມາດຕະຖານ IWA ແລະ ແນວທາງການຈັດລຽງຈັດຕັ້ງປະຕິບັດ ເພື່ອເພີ່ມປະສິດທິພາບຂອງລະບົບປະປາ ແລະ ຄວາມຍືນຍົງທາງດ້ານການເງິນ
+        </p>
+
+        <!-- Dynamic Visual Pills -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 max-w-3xl">
+          <div class="bg-gray-800/60 border border-gray-700/60 p-4 rounded-xl flex items-center space-x-3">
+            <div class="p-3 bg-brand-orange/20 text-brand-orange rounded-lg">
+              <i class="fa-solid fa-gauge-high text-xl"></i>
+            </div>
+            <div>
+              <div class="text-xs text-gray-400">ກາຍະພາບ</div>
+              <div class="text-sm font-bold text-gray-100">ການບໍລິຫານແຮງດັນ</div>
+            </div>
+          </div>
+          <div class="bg-gray-800/60 border border-gray-700/60 p-4 rounded-xl flex items-center space-x-3">
+            <div class="p-3 bg-amber-500/20 text-amber-400 rounded-lg">
+              <i class="fa-solid fa-magnifying-glass-chart text-xl"></i>
+            </div>
+            <div>
+              <div class="text-xs text-gray-400">ການກວດກາ</div>
+              <div class="text-sm font-bold text-gray-100">ຄົ້ນຫາຈຸດຮົ່ວ DMA</div>
+            </div>
+          </div>
+          <div class="bg-gray-800/60 border border-gray-700/60 p-4 rounded-xl flex items-center space-x-3">
+            <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-lg">
+              <i class="fa-solid fa-receipt text-xl"></i>
+            </div>
+            <div>
+              <div class="text-xs text-gray-400">ທາງພານິດ</div>
+              <div class="text-sm font-bold text-gray-100">ປັບປຸງກົງເຕີນ້ຳ & Billing</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="pt-4 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs text-gray-400 z-10 gap-2">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-sitemap text-brand-orange"></i>
+          <span>ກອງປະຊຸມວາງແຜນ ແລະ ຄຸ້ມຄອງລະບົບນ້ຳປະປາ</span>
+        </div>
+        <div class="text-gray-500">
+          ກົດປຸ່ມ <kbd class="px-2 py-0.5 bg-gray-800 text-gray-300 rounded border border-gray-700 font-mono">→</kbd> ຫຼື <kbd class="px-2 py-0.5 bg-gray-800 text-gray-300 rounded border border-gray-700 font-mono">Space</kbd> ເພື່ອໄປສະໄລ້ຕໍ່ໄປ
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Background & Impact -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 02</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">ສະພາບປະຈຸບັນ ແລະ ຜົນກະທົບຂອງ NRW</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-chart-pie text-2xl"></i>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+        <!-- Card 1: Definition -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl flex flex-col justify-between hover:border-brand-orange transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center mb-4 text-lg font-bold">
+              <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">NRW ແມ່ນຫຍັງ?</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">
+              <b>Non-Revenue Water (NRW)</b> ຄືປະລິມານນ້ຳທີ່ຜະລິດ ແລະ ສົບເຂົ້າລະບົບປະປາ ແຕ່ບໍ່ສາມາດເກັບລາຍຮັບໄດ້ ເນື່ອງຈາກການຮົ່ວໄຫຼ ຫຼື ການສູນເສຍທາງພານິດ.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-gray-700/60 text-xs text-orange-400 font-medium">
+            <i class="fa-solid fa-circle-info mr-1"></i> ສູດ: ປະລິມານຜະລິດ - ປະລິມານເກັບເງິນ
+          </div>
+        </div>
+
+        <!-- Card 2: Financial Impact -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl flex flex-col justify-between hover:border-brand-orange transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center mb-4 text-lg font-bold">
+              <i class="fa-solid fa-arrow-trend-down"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">ຜົນກະທົບທາງການເງິນ</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">
+              ເຮັດໃຫ້ການປະປາສູນເສຍລາຍຮັບຢ່າງມະຫາສານ, ເພີ່ມຕົ້ນທຶນການຜະລິດ (ຄ່າໄຟຟ້າ + ສານເຄມີ) ໂດຍບໍ່ໄດ້ຮັບຜົນຕອບແທນ.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-gray-700/60 text-xs text-red-400 font-medium">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> ຫຼຸດຜົນກຳໄລ ແລະ ງົບພັດທະນາ
+          </div>
+        </div>
+
+        <!-- Card 3: Operational Impact -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl flex flex-col justify-between hover:border-brand-orange transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4 text-lg font-bold">
+              <i class="fa-solid fa-gears"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">ຜົນກະທົບທາງດ້ານເຕັກນິກ</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">
+              ແຮງດັນນ້ຳໃນລະບົບຕົກຕໍ່າ, ເພີ່ມຄວາມສ່ຽງການປົນເປື້ອນໃນທໍ່, ແລະ ຜູ້ໃຊ້ນ້ຳບໍ່ມີນ້ຳໃຊ້ຢ່າງພຽງພໍໃນບາງເຂດ.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-gray-700/60 text-xs text-blue-400 font-medium">
+            <i class="fa-solid fa-wrench mr-1"></i> ເສຍຫາຍຕໍ່ໂຄງຮ່າງພື້ນຖານ
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Stat Footer Banner -->
+      <div class="bg-gradient-to-r from-brand-orange/20 via-gray-800 to-gray-800 p-4 rounded-xl border border-brand-orange/30 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <i class="fa-solid fa-chart-line text-brand-orange text-xl"></i>
+          <span class="text-xs sm:text-sm text-gray-200">
+            <b>ເປົ້າໝາຍສາກົນ:</b> ຄວນຫຼຸດປະລິມານ NRW ໃຫ້ຕ່ຳກວ່າ <b>15% - 20%</b> ເພື່ອຄວາມຍືນຍົງຂອງອົງກອນ.
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: IWA Water Balance Concept -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 03</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">ໂຄງສ້າງຄວາມສົມດຸນຂອງນ້ຳ ມາດຕະຖານ IWA</h2>
+        </div>
+        <span class="text-xs bg-gray-800 px-3 py-1 rounded text-gray-400 border border-gray-700">International Water Association</span>
+      </div>
+
+      <!-- Interactive Water Balance Table Grid -->
+      <div class="my-auto overflow-x-auto">
+        <div class="min-w-[700px] text-xs sm:text-sm">
+          <!-- Top Row: System Input Volume -->
+          <div class="bg-gray-800 border-2 border-gray-600 p-3 rounded-t-xl font-bold text-center text-white text-base">
+            ປະລິມານນ້ຳຜະລິດເຂົ້າລະບົບ (System Input Volume)
+          </div>
+
+          <!-- Second Level Split -->
+          <div class="grid grid-cols-12 gap-1 my-1">
+            <!-- Authorized Consumption -->
+            <div class="col-span-7 bg-emerald-900/40 border border-emerald-600/60 p-2 text-center rounded-l font-semibold text-emerald-200">
+              ນ້ຳທີ່ມີການບໍລິໂພກທີ່ໄດ້ຮັບອະນຸຍາດ (Authorized Consumption)
+            </div>
+            <!-- Water Losses -->
+            <div class="col-span-5 bg-red-900/40 border border-red-600/60 p-2 text-center rounded-r font-semibold text-red-200">
+              ນ້ຳສູນເສຍ (Water Losses)
+            </div>
+          </div>
+
+          <!-- Third Level Split -->
+          <div class="grid grid-cols-12 gap-1 my-1">
+            <!-- Billed Authorized -->
+            <div class="col-span-5 bg-emerald-950/60 border border-emerald-700/50 p-2 text-center text-emerald-300">
+              ນ້ຳເກັບເງິນໄດ້ (Billed Authorized)
+            </div>
+            <!-- Unbilled Authorized -->
+            <div class="col-span-2 bg-teal-950/60 border border-teal-700/50 p-2 text-center text-teal-300">
+              ນ້ຳບໍ່ໄດ້ເກັບເງິນ (Unbilled)
+            </div>
+            <!-- Commercial Losses -->
+            <div class="col-span-2 bg-amber-950/60 border border-amber-700/50 p-2 text-center text-amber-300">
+              ສູນເສຍທາງພານິດ (Apparent)
+            </div>
+            <!-- Real Losses -->
+            <div class="col-span-3 bg-rose-950/60 border border-rose-700/50 p-2 text-center text-rose-300">
+              ສູນເສຍທາງກາຍະພາບ (Real Losses)
+            </div>
+          </div>
+
+          <!-- Fourth Level Details -->
+          <div class="grid grid-cols-12 gap-1 mt-1 text-xs">
+            <div class="col-span-5 bg-gray-800/80 p-2 rounded border border-gray-700 text-gray-300">
+              • ຜູ້ໃຊ້ນ້ຳທົ່ວໄປ, ອຸດສາຫະກຳ, ການຄ້າ
+            </div>
+            <div class="col-span-2 bg-gray-800/80 p-2 rounded border border-gray-700 text-gray-300">
+              • ດັບເພີງ, ລ້າງທໍ່
+            </div>
+            <div class="col-span-2 bg-gray-800/80 p-2 rounded border border-gray-700 text-gray-300">
+              • ກົງເຕີຊ້າ, ລັກໃຊ້, ຂໍ້ມູນຜິດ
+            </div>
+            <div class="col-span-3 bg-gray-800/80 p-2 rounded border border-gray-700 text-gray-300">
+              • ທໍ່ແຕກ/ຮົ່ວ, ນ້ຳລົ້ນອ່າງ
+            </div>
+          </div>
+
+          <!-- Bottom Revenue vs NRW Summary Bar -->
+          <div class="grid grid-cols-12 gap-1 mt-3 font-bold text-center">
+            <div class="col-span-5 bg-emerald-600 text-white p-2 rounded-lg shadow">
+              <i class="fa-solid fa-money-bill-wave mr-1"></i> Revenue Water (ນ້ຳສ້າງລາຍຮັບ)
+            </div>
+            <div class="col-span-7 bg-brand-orange text-white p-2 rounded-lg shadow">
+              <i class="fa-solid fa-droplet-slash mr-1"></i> Non-Revenue Water - NRW (ນ້ຳບໍ່ສ້າງລາຍຮັບ)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-xs text-gray-400 bg-gray-800/60 p-3 rounded-lg border border-gray-700 flex items-center justify-between">
+        <span><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> <b>ໝາຍເຫດ:</b> NRW ປະກອບດ້ວຍ: ນ້ຳບໍ່ໄດ້ເກັບເງິນ + ສູນເສຍທາງພານິດ + ສູນເສຍທາງກາຍະພາບ</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Physical Loss - Pressure Management -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 04 • Physical Loss Reduction</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">1. ການບໍລິຫານ ແລະ ຄວບຄຸມແຮງດັນ (Pressure Management)</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-gauge-high text-2xl"></i>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto items-center">
+        <!-- Content List -->
+        <div class="space-y-4">
+          <div class="bg-gray-800/80 border-l-4 border-l-brand-orange p-4 rounded-r-xl border-y border-r border-gray-700">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-brand-orange"></i> ຕິດຕັ້ງວາວຫຼຸດແຮງດັນ (PRV - Pressure Reducing Valves)
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-300 mt-1">
+              ປັບແຮງດັນໃນເຄືອຂ່າຍທໍ່ໃຫ້ເໝາະສົມຕາມຊ່ວງເວລາ ເພື່ອຫຼຸດອັດຕາການຮົ່ວຊຶມຂອງນ້ຳ.
+            </p>
+          </div>
+
+          <div class="bg-gray-800/80 border-l-4 border-l-amber-500 p-4 rounded-r-xl border-y border-r border-gray-700">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <i class="fa-solid fa-moon text-amber-400"></i> ການຫຼຸດແຮງດັນຊ່ວງກາງຄືນ (Night Pressure Reduction)
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-300 mt-1">
+              ຊ່ວງກາງຄືນມີການໃຊ້ນ້ຳນ້ອຍ ແຮງດັນຈະສູງຂຶ້ນໂດຍອັດໂຕໂນມັດ ການຫຼຸດແຮງດັນຊ່ວຍປ້ອງກັນທໍ່ແຕກ.
+            </p>
+          </div>
+
+          <div class="bg-gray-800/80 border-l-4 border-l-blue-500 p-4 rounded-r-xl border-y border-r border-gray-700">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-blue-400"></i> ປ້ອງກັນແຮງກະແທກ (Water Hammer Mitigation)
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-300 mt-1">
+              ຫຼຸດການປິດ-ເປີດ ປັ໊ມນ້ຳ ຫຼື ວາວ ຢ່າງກະທັນຫັນ ເພື່ອຍືດອາຍຸການໃຊ້ງານຂອງທໍ່.
+            </p>
+          </div>
+        </div>
+
+        <!-- Visual Diagram: High Pressure vs PRV Controlled Flow -->
+        <div class="bg-gray-900/90 border border-gray-700 p-6 rounded-2xl flex flex-col justify-between h-full">
+          <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex justify-between">
+            <span>ແຜນພູມປຽບທຽບແຮງດັນ ແລະ ອັດຕາການຮົ່ວ</span>
+            <span class="text-brand-orange">PRV Dynamic Control</span>
+          </div>
+
+          <!-- Flow Comparison Graphic -->
+          <div class="space-y-6">
+            <!-- Without PRV -->
+            <div class="bg-gray-800 p-4 rounded-xl border border-red-500/30">
+              <div class="flex justify-between text-xs mb-1 font-semibold text-red-400">
+                <span>ກ່ອນຕິດຕັ້ງ PRV (ແຮງດັນສູງເກີນໄປ)</span>
+                <span>Leakage Rate: High (100%)</span>
+              </div>
+              <div class="w-full bg-gray-700 h-3 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-red-500 to-rose-600 h-full w-full"></div>
+              </div>
+            </div>
+
+            <!-- With PRV -->
+            <div class="bg-gray-800 p-4 rounded-xl border border-emerald-500/30">
+              <div class="flex justify-between text-xs mb-1 font-semibold text-emerald-400">
+                <span>ຫຼັງຕິດຕັ້ງ PRV (ແຮງດັນຄວບຄຸມ)</span>
+                <span>Leakage Rate: Reduced (-40%)</span>
+              </div>
+              <div class="w-full bg-gray-700 h-3 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[60%]"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 p-3 bg-brand-orange/10 border border-brand-orange/20 rounded-lg text-center text-xs text-brand-orange font-semibold">
+            <i class="fa-solid fa-calculator mr-1"></i> ຫຼັກການ: ແຮງດັນຫຼຸດລົງ 10% ➔ ປະລິມານນ້ຳຮົ່ວຫຼຸດລົງເຖິງ 12%
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: Physical Loss - ALC & DMA -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 05 • Physical Loss Reduction</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">2. ການຄົ້ນຫາຈຸດຮົ່ວ ແລະ ແບ່ງເຂດ DMA</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-magnifying-glass-location text-2xl"></i>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 my-auto">
+        <!-- Feature 1: DMA Zoning -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl hover:border-brand-orange transition">
+          <div class="w-12 h-12 bg-brand-orange/20 text-brand-orange rounded-xl flex items-center justify-center mb-3 text-xl">
+            <i class="fa-solid fa-sitemap"></i>
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">ການແບ່ງເຂດ DMA (District Metered Area)</h3>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            ແບ່ງເຄືອຂ່າຍທໍ່ອອກເປັນເຂດຍ່ອຍ (500 - 2,000 ຄົວເຮືອນ) ເພື່ອຕິດຕາມປະລິມານນ້ຳໄຫຼເຂົ້າ ແລະ ແຮງດັນ ຕະຫຼອດ 24 ຊົ່ວໂມງ.
+          </p>
+        </div>
+
+        <!-- Feature 2: MNF Analysis -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl hover:border-brand-orange transition">
+          <div class="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-xl flex items-center justify-center mb-3 text-xl">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">ການວິເຄາະ MNF (Minimum Night Flow)</h3>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            ກວດສອບອັດຕາການໄຫຼຕ່ຳສຸດຊ່ວງກາງຄືນ (02:00 - 04:00 ໂມງ) ເພື່ອປະເມີນປະລິມານນ້ຳຮົ່ວທີ່ແທ້ຈິງໃນແຕ່ລະ DMA.
+          </p>
+        </div>
+
+        <!-- Feature 3: Leak Detection Tools -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl hover:border-brand-orange transition">
+          <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center mb-3 text-xl">
+            <i class="fa-solid fa-headphones"></i>
+          </div>
+          <h3 class="font-bold text-white text-base mb-2">ອຸປະກອນຟັງສຽງຄົ້ນຫາຈຸດຮົ່ວ</h3>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            ໃຊ້ອຸປະກອນ Acoustic Leak Detector, Noise Loggers, ແລະ Correlators ເພື່ອຊອກຫາຕຳແໜ່ງທໍ່ຮົ່ວໃຕ້ດິນຢ່າງແນ່ນອນ.
+          </p>
+        </div>
+      </div>
+
+      <!-- Interactive Tool Grid Mockup -->
+      <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 flex flex-wrap items-center justify-around gap-4 text-xs">
+        <div class="flex items-center space-x-2 text-gray-300">
+          <i class="fa-solid fa-tower-cell text-brand-orange"></i>
+          <span><b>Noise Logger:</b> ບັນທຶກສຽງຮົ່ວ 24/7</span>
+        </div>
+        <div class="flex items-center space-x-2 text-gray-300">
+          <i class="fa-solid fa-bullseye text-amber-400"></i>
+          <span><b>Correlator:</b> ຄຳນວນໄລຍະຈຸດຮົ່ວ</span>
+        </div>
+        <div class="flex items-center space-x-2 text-gray-300">
+          <i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i>
+          <span><b>Ultrasonic Meter:</b> ແທກການໄຫຼຄວາມໄວສູງ</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: Physical Loss - Speed of Repair & Asset Mgmt -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 06 • Physical Loss Reduction</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">3. ຄວາມໄວໃນການຊ້ອມແປງ ແລະ ການຄຸ້ມຄອງສິນທັບ</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-person-digging text-2xl"></i>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+        <!-- Pillar 1: Repair Speed -->
+        <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-brand-orange bg-brand-orange/10 px-2.5 py-1 rounded">Speed & Quality</span>
+              <i class="fa-solid fa-clock-rotate-left text-brand-orange text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">ຄວາມໄວ ແລະ ຄຸນນະພາບການຊ້ອມແປງ</h3>
+            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed mb-4">
+              ຫຼຸດໄລຍະເວລາຕັ້ງແຕ່ພົບຈຸດຮົ່ວ ຈົນເຖິງການຊ້ອມແປງສຳເລັດ (Awareness, Location, Repair Time - ALR).
+            </p>
+          </div>
+          <div class="bg-gray-900/80 p-3 rounded-lg border border-gray-800 text-xs text-gray-300 space-y-2">
+            <div class="flex justify-between">
+              <span>ທີມງານສຸກເສີນ 24/7:</span>
+              <span class="text-emerald-400 font-bold">ພ້ອມປະຕິບັດງານ</span>
+            </div>
+            <div class="flex justify-between">
+              <span>ມາດຕະຖານການຊ້ອມ:</span>
+              <span class="text-emerald-400 font-bold">ISO & Local Standard</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pillar 2: Asset Management -->
+        <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded">Asset Renewal</span>
+              <i class="fa-solid fa-pipe-collar text-amber-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">ການຟື້ນຟູ ແລະ ປ່ຽນແທນທໍ່ປະປາ</h3>
+            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed mb-4">
+              ຈັດລຽງບຸລິມະສິດການປ່ຽນແທນທໍ່ເກົ່າ, ທໍ່ທີ່ແຕກຮົ່ວຊ້ຳຊື້ ຫຼື ທໍ່ທີ່ໝົດອາຍຸການໃຊ້ງານຢ່າງມີແຜນການ.
+            </p>
+          </div>
+          <div class="bg-gray-900/80 p-3 rounded-lg border border-gray-800 text-xs text-gray-300 space-y-2">
+            <div class="flex justify-between">
+              <span>ທໍ່ HDPE / Ductile Iron:</span>
+              <span class="text-amber-400 font-bold">ທົນທານສູງ</span>
+            </div>
+            <div class="flex justify-between">
+              <span>ແຜນປ່ຽນແທນປະຈຳປີ:</span>
+              <span class="text-amber-400 font-bold">Target 2-3% / Year</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-gray-800/60 rounded-xl border border-gray-700 text-xs text-gray-300 flex items-center justify-between">
+        <span><i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i><b>ສະຫຼຸບ 4 ເສົາຫຼັກ Real Loss:</b> Pressure Management, Active Leakage Control, Speed of Repair, Pipeline Asset Management</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: Apparent Loss / Commercial Loss -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 07 • Commercial Loss Control</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">ການຫຼຸດນ້ຳສູນເສຍທາງພານິດ (Commercial Losses)</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-file-invoice-dollar text-2xl"></i>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 my-auto">
+        <!-- Commercial Loss 1 -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl flex flex-col justify-between hover:border-brand-orange transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center mb-3 text-lg font-bold">
+              <i class="fa-solid fa-gauge"></i>
+            </div>
+            <h3 class="font-bold text-white text-base mb-2">ການບໍລິຫານກົງເຕີນ້ຳ</h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              ກວດເຊັກ ແລະ ປ່ຽນກົງເຕີນ້ຳເກົ່າທີ່ແທກຄ່າຄາດເຄື່ອນ (Under-registration). ຫັນມາໃຊ້ກົງເຕີ Ultrasonic ຫຼື Smart Meters.
+            </p>
+          </div>
+          <div class="mt-4 text-xs font-semibold text-orange-400">
+            <i class="fa-solid fa-rotate mr-1"></i> ປ່ຽນກົງເຕີຕາມອາຍຸ 5-7 ປີ
+          </div>
+        </div>
+
+        <!-- Commercial Loss 2 -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl flex flex-col justify-between hover:border-brand-orange transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center mb-3 text-lg font-bold">
+              <i class="fa-solid fa-user-ninja"></i>
+            </div>
+            <h3 class="font-bold text-white text-base mb-2">ປ້ອງກັນການລັກໃຊ້ນ້ຳ</h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              ກວດກາການຕໍ່ທໍ່ລັກໃຊ້ນ້ຳຜິດກົດໝາຍ, ການດັດແປງກົງເຕີນ້ຳ ແລະ ບັງຄັບໃຊ້ມາດຕະການທາງກົດໝາຍຢ່າງເຂັ້ມງວດ.
+            </p>
+          </div>
+          <div class="mt-4 text-xs font-semibold text-red-400">
+            <i class="fa-solid fa-shield-cat mr-1"></i> ກວດກາພື້ນທີ່ສ່ຽງ
+          </div>
+        </div>
+
+        <!-- Commercial Loss 3 -->
+        <div class="bg-gray-800/80 border border-gray-700 p-5 rounded-xl flex flex-col justify-between hover:border-brand-orange transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-3 text-lg font-bold">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <h3 class="font-bold text-white text-base mb-2">ຄວາມຖືກຕ້ອງຂອງຂໍ້ມູນ & Billing</h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              ປັບປຸງລະບົບ GIS, ຫຼຸດຜົນກະທົບຈາກການອ່ານເລກກົງເຕີຜິດພາດ, ແລະ ປັບປຸງລະບົບອອກໃບແຈ້ງຄ່ານ້ຳປະປາ.
+            </p>
+          </div>
+          <div class="mt-4 text-xs font-semibold text-blue-400">
+            <i class="fa-solid fa-mobile-screen-button mr-1"></i> ໃຊ້ Mobile App ອ່ານເລກ
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 flex items-center justify-between text-xs text-gray-300">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-circle-nodes text-brand-orange"></i>
+          <b>Smart Integration:</b> ເຊື່ອມໂຍງຂໍ້ມູນກົງເຕີ Smart Meter ເຂົ້າກັບລະບົບ Billing ແລະ GIS ແບບ Real-time
+        </span>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: Unbilled Authorized Consumption -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 08 • Unbilled Authorized Consumption</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">ການຄຸ້ມຄອງນ້ຳໃຊ້ທາງການທີ່ບໍ່ໄດ້ເກັບເງິນ</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-faucet-drip text-2xl"></i>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+        <div class="bg-gray-800/80 p-5 rounded-xl border border-gray-700 flex items-start space-x-4">
+          <div class="p-3 bg-brand-orange/20 text-brand-orange rounded-lg text-2xl shrink-0">
+            <i class="fa-solid fa-fire-extinguisher"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">ນ້ຳໃຊ້ໃນກິດຈະການດັບເພີງ</h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              ຕິດຕັ້ງກົງເຕີນ້ຳ ຫຼື ມີລະບົບບັນທຶກປະລິມານນ້ຳທີ່ໃຊ້ໃນພາລະກິດດັບເພີງ ເພື່ອປະເມີນຕົວເລກນ້ຳສູນເສຍໃຫ້ຖືກຕ້ອງ.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-gray-800/80 p-5 rounded-xl border border-gray-700 flex items-start space-x-4">
+          <div class="p-3 bg-teal-500/20 text-teal-400 rounded-lg text-2xl shrink-0">
+            <i class="fa-solid fa-filter text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">ນ້ຳໃຊ້ໃນຂະບວນການຜະລິດ & ລ້າງທໍ່</h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              ບັນທຶກປະລິມານນ້ຳທີ່ໃຊ້ໃນການລ້າງກັ່ນ (Backwashing) ແລະ ການລ້າງທໍ່ປະປາ (Pipe Flushing) ຢ່າງເປັນລະບົບ.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-gray-800/80 p-5 rounded-xl border border-gray-700 flex items-start space-x-4">
+          <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-lg text-2xl shrink-0">
+            <i class="fa-solid fa-tree"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">ນ້ຳໃຊ້ໃນສວນສາທາລະນະ & ບໍລິການເມືອງ</h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              ຕິດຕັ້ງກົງເຕີນ້ຳສຳລັບຈຸດບໍລິການສາທາລະນະຂອງເທດສະບານ ເພື່ອຫັນປ່ຽນຈາກນ້ຳບໍ່ເກັບເງິນມາເປັນການເກັບເງິນຂ້າມຂະແໜງ.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-gray-800/80 p-5 rounded-xl border border-gray-700 flex items-start space-x-4">
+          <div class="p-3 bg-amber-500/20 text-amber-400 rounded-lg text-2xl shrink-0">
+            <i class="fa-solid fa-clipboard-check"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">ການກວດສອບ Water Balance Audit</h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+              ປະເມີນປະລິມານ Unbilled Authorized Consumption ເປັນປະຈຳ ເພື່ອບໍ່ໃຫ້ຕົວເລກປົນເປືອກັບ Real Losses.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-brand-orange/10 border border-brand-orange/30 rounded-xl text-xs text-brand-orange flex items-center justify-between">
+        <span><i class="fa-solid fa-circle-exclamation mr-1.5"></i> <b>ເປົ້າໝາຍ:</b> ຄວບຄຸມນ້ຳໃຊ້ທາງການບໍ່ໃຫ້ເກີນ <b>1-2%</b> ຂອງປະລິມານນ້ຳຜະລິດທັງໝົດ</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: Implementation Roadmap & KPIs -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card">
+      <div class="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 09 • Action Plan & Metrics</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">ແຜນປະຕິບັດງານ ແລະ ຕົວຊີ້ວັດຜົນງານ (KPIs)</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-map-location-dot text-2xl"></i>
+        </div>
+      </div>
+
+      <!-- Roadmap Phases -->
+      <div class="my-auto space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Phase 1 -->
+          <div class="bg-gray-800/90 border-t-4 border-t-brand-orange p-4 rounded-b-xl border-x border-b border-gray-700">
+            <div class="text-xs font-bold text-brand-orange mb-1 uppercase">Phase 01 • ໄລຍະສັ້ນ (1 - 6 ເດືອນ)</div>
+            <h3 class="font-bold text-white text-sm mb-2">ການປະເມີນ & ແບ່ງເຂດ DMA</h3>
+            <ul class="text-xs text-gray-300 space-y-1.5 list-disc list-inside">
+              <li>ປະເມີນຄວາມສົມດຸນນ້ຳ (Water Audit)</li>
+              <li>ຈັດຕັ້ງເຂດ DMA ນຳຮອງ</li>
+              <li>ຕິດຕັ້ງ PRV ຄວບຄຸມແຮງດັນ</li>
+            </ul>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="bg-gray-800/90 border-t-4 border-t-amber-500 p-4 rounded-b-xl border-x border-b border-gray-700">
+            <div class="text-xs font-bold text-amber-400 mb-1 uppercase">Phase 02 • ໄລຍະກາງ (6 - 18 ເດືອນ)</div>
+            <h3 class="font-bold text-white text-sm mb-2">ຄົ້ນຫາຈຸດຮົ່ວ & ປ່ຽນກົງເຕີ</h3>
+            <ul class="text-xs text-gray-300 space-y-1.5 list-disc list-inside">
+              <li>ເລັ່ງຄົ້ນຫາ ແລະ ຊ້ອມແປງຈຸດຮົ່ວ (ALC)</li>
+              <li>ປ່ຽນແທນກົງເຕີນ້ຳທີ່ໝົດອາຍຸ</li>
+              <li>ເຊື່ອມໂຍງຂໍ້ມູນກັບລະບົບ GIS</li>
+            </ul>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="bg-gray-800/90 border-t-4 border-t-emerald-500 p-4 rounded-b-xl border-x border-b border-gray-700">
+            <div class="text-xs font-bold text-emerald-400 mb-1 uppercase">Phase 03 • ໄລຍະຍາວ (18 - 36 ເດືອນ)</div>
+            <h3 class="font-bold text-white text-sm mb-2">Smart Water & Pipe Renewal</h3>
+            <ul class="text-xs text-gray-300 space-y-1.5 list-disc list-inside">
+              <li>ຂະຫຍາຍລະບົບ Smart Ultrasonic Meters</li>
+              <li>ປ່ຽນແທນທໍ່ປະປາທີ່ໝົດອາຍຸ</li>
+              <li>ສ້າງລະບົບຕິດຕາມອັດໂຕໂນມັດ SCADA</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- KPI Indicators Box -->
+        <div class="bg-gray-900 p-4 rounded-xl border border-gray-700 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+          <div class="p-2 bg-gray-800 rounded-lg">
+            <div class="text-xs text-gray-400">ILI Target</div>
+            <div class="text-base font-bold text-brand-orange">&lt; 2.0 (Standard)</div>
+          </div>
+          <div class="p-2 bg-gray-800 rounded-lg">
+            <div class="text-xs text-gray-400">NRW Reduction</div>
+            <div class="text-base font-bold text-emerald-400">-5% ຕໍ່ປີ</div>
+          </div>
+          <div class="p-2 bg-gray-800 rounded-lg">
+            <div class="text-xs text-gray-400">Meter Accuracy</div>
+            <div class="text-base font-bold text-amber-400">&gt; 98%</div>
+          </div>
+          <div class="p-2 bg-gray-800 rounded-lg">
+            <div class="text-xs text-gray-400">Repair Speed</div>
+            <div class="text-base font-bold text-blue-400">&lt; 24 ຊົ່ວໂມງ</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: Conclusion & References -->
+    <section class="slide w-full h-full max-w-6xl flex-col justify-between glass-panel rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-card border-r-4 border-r-brand-orange">
+      <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+        <div>
+          <span class="text-brand-orange font-bold text-xs uppercase tracking-wider">Slide 10 • Summary & References</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">ບົດສະຫຼຸບ ແລະ ແຫຼ່ງອ້າງອີງ</h2>
+        </div>
+        <div class="p-2 bg-brand-orange/10 text-brand-orange rounded-lg">
+          <i class="fa-solid fa-book-bookmark text-2xl"></i>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+        <!-- Conclusion summary -->
+        <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-flag-checkered text-brand-orange"></i> ສະຫຼຸບແນວທາງຈັດຕັ້ງປະຕິບັດ
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed space-y-2">
+              ການຫຼຸດນ້ຳສູນເສຍ (NRW) ຢ່າງມີປະສິດທິພາບ ຕ້ອງອາໄສການດຳເນີນງານແບບຄົບວົງຈອນ ທັງການບໍລິຫານແຮງດັນ, ການຄົ້ນຫາຈຸດຮົ່ວ DMA, ການປ່ຽນແທນກົງເຕີ, ແລະ ການປັບປຸງຖານຂໍ້ມູນ Billing/GIS.
+            </p>
+          </div>
+          <div class="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-xs text-emerald-300">
+            <i class="fa-solid fa-handshake mr-1"></i> ສ້າງຄວາມມັ້ນຄົງດ້ານນ້ຳປະປາ ແລະ ເພີ່ມລາຍຮັບຢ່າງຍືນຍົງ
+          </div>
+        </div>
+
+        <!-- References -->
+        <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-bookmark text-amber-400"></i> ແຫຼ່ງອ້າງອີງມາດຕະຖານ (References)
+            </h3>
+            <ul class="text-xs text-gray-300 space-y-2.5">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-globe text-brand-orange mt-0.5"></i>
+                <span><b>IWA Water Loss Specialist Group (WLSG):</b> The IWA Water Balance Framework & International Terminology.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-building-columns text-brand-orange mt-0.5"></i>
+                <span><b>World Bank Report:</b> The Challenge of Reducing Non-Revenue Water in Developing Countries.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-book-open text-brand-orange mt-0.5"></i>
+                <span><b>AWWA M36 Manual:</b> Water Audits and Loss Control Programs.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final Thank you Banner -->
+      <div class="bg-gradient-to-r from-brand-orange via-brand-darkorange to-amber-600 p-4 rounded-xl text-center text-white font-bold text-sm sm:text-base shadow-lg flex justify-between items-center px-8">
+        <span><i class="fa-solid fa-heart mr-2"></i> ຂໍຂອບໃຈ ສຳລັບການຮັບຟັງ</span>
+        <span class="text-xs font-normal bg-black/20 px-3 py-1 rounded-full">Q & A Session</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <footer class="h-16 px-6 glass-panel border-t border-gray-800/80 flex items-center justify-between z-30 shrink-0">
+    <!-- Prev Button -->
+    <button id="prevBtn" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-brand-orange hover:text-white transition text-xs sm:text-sm font-semibold flex items-center gap-2 text-gray-300 border border-gray-700 disabled:opacity-40 disabled:cursor-not-allowed">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>ກັບຄືນ</span>
+    </button>
+
+    <!-- Slide Indicators Dots -->
+    <div id="dotsContainer" class="hidden sm:flex items-center space-x-2">
+      <!-- Generated via JS -->
+    </div>
+
+    <!-- Next Button -->
+    <button id="nextBtn" class="px-5 py-2 rounded-xl bg-brand-orange hover:bg-brand-darkorange text-white transition text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-lg shadow-brand-orange/20">
+      <span>ຕໍ່ໄປ</span>
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </footer>
+
+  <!-- SLIDE DRAWER / THUMBNAIL OVERLAY MODAL -->
+  <div id="drawerOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300 flex flex-col justify-end sm:justify-center p-4 sm:p-8">
+    <div class="bg-brand-charcoal border border-gray-700 rounded-2xl p-6 max-w-5xl w-full mx-auto max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-border-all text-brand-orange"></i>
+          <h3 class="text-lg font-bold text-white">ລາຍການສະໄລ້ທັງໝົດ (Slide Overview)</h3>
+        </div>
+        <button id="closeDrawerBtn" class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Thumbnail Grid Container -->
+      <div id="thumbnailGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 overflow-y-auto pr-2 py-2">
+        <!-- Thumbnails generated dynamically by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT SLIDE ENGINE -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentSlide = 0;
+
+      // DOM Elements
+      const currentSlideNum = document.getElementById('currentSlideNum');
+      const totalSlidesNum = document.getElementById('totalSlidesNum');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const dotsContainer = document.getElementById('dotsContainer');
+      const toggleDrawerBtn = document.getElementById('toggleDrawerBtn');
+      const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+      const drawerOverlay = document.getElementById('drawerOverlay');
+      const thumbnailGrid = document.getElementById('thumbnailGrid');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+      // Titles for thumbnails
+      const slideTitles = [
+        "1. ໜ້າທຳອິດ",
+        "2. ສະພາບປະຈຸບັນ & ຜົນກະທົບ",
+        "3. ຄວາມສົມດຸນ IWA Balance",
+        "4. ການບໍລິຫານແຮງດັນ PRV",
+        "5. ການແບ່ງເຂດ DMA & ALC",
+        "6. ຄວາມໄວການຊ້ອມ & ສິນທັບ",
+        "7. ນ້ຳສູນເສຍທາງພານິດ",
+        "8. ນ້ຳໃຊ້ທາງການບໍ່ເກັບເງິນ",
+        "9. ແຜນດຳເນີນງານ & KPIs",
+        "10. ບົດສະຫຼຸບ & ອ້າງອີງ"
+      ];
+
+      totalSlidesNum.textContent = String(totalSlides).padStart(2, '0');
+
+      // Initialize Dots and Thumbnails
+      function initNavigationUI() {
+        dotsContainer.innerHTML = '';
+        thumbnailGrid.innerHTML = '';
+
+        slides.forEach((_, idx) => {
+          // Dots
+          const dot = document.createElement('button');
+          dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-brand-orange w-6' : 'bg-gray-700 hover:bg-gray-500'}`;
+          dot.title = `Go to slide ${idx + 1}`;
+          dot.addEventListener('click', () => goToSlide(idx));
+          dotsContainer.appendChild(dot);
+
+          // Thumbnail Cards
+          const thumb = document.createElement('div');
+          thumb.className = `p-3 rounded-xl border text-xs font-semibold cursor-pointer transition flex flex-col justify-between h-24 ${idx === currentSlide ? 'bg-brand-orange/20 border-brand-orange text-white' : 'bg-gray-800/80 border-gray-700 text-gray-300 hover:border-gray-500'}`;
+          thumb.innerHTML = `
+            <span class="text-brand-orange font-mono">Slide ${String(idx + 1).padStart(2, '0')}</span>
+            <span class="line-clamp-2">${slideTitles[idx] || 'Slide ' + (idx + 1)}</span>
+          `;
+          thumb.addEventListener('click', () => {
+            goToSlide(idx);
+            closeDrawer();
+          });
+          thumbnailGrid.appendChild(thumb);
+        });
+      }
+
+      function updateSlideUI() {
+        slides.forEach((slide, index) => {
+          if (index === currentSlide) {
+            slide.classList.add('active');
+          } else {
+            slide.classList.remove('active');
+          }
+        });
+
+        currentSlideNum.textContent = String(currentSlide + 1).padStart(2, '0');
+        prevBtn.disabled = currentSlide === 0;
+
+        if (currentSlide === totalSlides - 1) {
+          nextBtn.innerHTML = `<span>ສຳເລັດ</span> <i class="fa-solid fa-check"></i>`;
+        } else {
+          nextBtn.innerHTML = `<span>ຕໍ່ໄປ</span> <i class="fa-solid fa-chevron-right"></i>`;
+        }
+
+        initNavigationUI();
+      }
+
+      function goToSlide(index) {
+        if (index >= 0 && index < totalSlides) {
+          currentSlide = index;
+          updateSlideUI();
+        }
+      }
+
+      function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+          goToSlide(currentSlide + 1);
+        }
+      }
+
+      function prevSlide() {
+        if (currentSlide > 0) {
+          goToSlide(currentSlide - 1);
+        }
+      }
+
+      // Drawer Controls
+      function openDrawer() {
+        drawerOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        drawerOverlay.classList.add('opacity-100');
+      }
+
+      function closeDrawer() {
+        drawerOverlay.classList.add('opacity-0', 'pointer-events-none');
+        drawerOverlay.classList.remove('opacity-100');
+      }
+
+      // Fullscreen Toggle
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(err => {
+            console.log(`Error attempting to enable fullscreen: ${err.message}`);
+          });
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      }
+
+      // Event Listeners
+      nextBtn.addEventListener('click', nextSlide);
+      prevBtn.addEventListener('click', prevSlide);
+      toggleDrawerBtn.addEventListener('click', openDrawer);
+      closeDrawerBtn.addEventListener('click', closeDrawer);
+      drawerOverlay.addEventListener('click', (e) => {
+        if (e.target === drawerOverlay) closeDrawer();
+      });
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+      // Keyboard Controls
+      document.addEventListener('keydown', (e) => {
+        if (drawerOverlay.classList.contains('opacity-100')) {
+          if (e.key === 'Escape') closeDrawer();
+          return;
+        }
+
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.code === 'Space') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === 'f' || e.key === 'F') {
+          toggleFullscreen();
+        }
+      });
+
+      // Mobile swipe: react only to a clear horizontal gesture, not vertical scrolling.
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchStartTarget = null;
+
+      document.addEventListener('touchstart', e => {
+        if (!e.changedTouches.length) return;
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+        touchStartTarget = e.target;
+      }, { passive: true });
+
+      document.addEventListener('touchend', e => {
+        if (!e.changedTouches.length || drawerOverlay.classList.contains('opacity-100')) return;
+        // Do not hijack swipes on buttons, links, or horizontally scrollable content.
+        if (touchStartTarget && touchStartTarget.closest('button, a, input, textarea, select, [data-no-swipe]')) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) < 65 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
+        if (dx < 0) nextSlide();
+        else prevSlide();
+      }, { passive: true });
+
+      // Initial Call
+      updateSlideUI();
+    });
+  </script>
+</body>
+</html>
